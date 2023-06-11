@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.Escape))
+            Application.Quit();
+        if (Input.GetKeyUp(KeyCode.Space))
             WordManager.Instance.ClearWord();
         foreach (var key in _listKeycode)
             if (Input.GetKeyDown(key))

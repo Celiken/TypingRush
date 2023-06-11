@@ -5,7 +5,6 @@ public class WordManager : MonoBehaviour
 {
     public static WordManager Instance;
 
-    [SerializeField] private TextMeshProUGUI _typingWordTMP;
     [SerializeField] private TextMeshProUGUI _scoreTMP;
 
     private int score = 0;
@@ -32,7 +31,6 @@ public class WordManager : MonoBehaviour
     private void UpdateWordCompletion()
     {
         bool hasRightStart = false;
-        _typingWordTMP.text = _typing;
         foreach (Enemy enemy in SpawnManager.Instance._enemyList)
         {
             if (enemy.UpdateWordCompletion(_typing)) hasRightStart = true;
@@ -43,7 +41,6 @@ public class WordManager : MonoBehaviour
     public void ClearWord()
     {
         _typing = "";
-        _typingWordTMP.text = "";
         UpdateWordCompletion();
     }
 

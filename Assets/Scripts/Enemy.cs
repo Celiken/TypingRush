@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour
     {
         if (_target.StartsWith(_typing))
         {
-            _targetTMP.text = "<color=black>" + _target.Insert(_typing.Length, "</color>");
+            _targetTMP.text = "<color=yellow>" + _target.Insert(_typing.Length, "</color>");
             if (_typing == _target)
             {
                 WordManager.Instance.ValidateWord();

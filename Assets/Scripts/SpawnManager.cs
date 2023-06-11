@@ -20,7 +20,6 @@ public class SpawnManager : MonoBehaviour
     {
         Instance = this;
         _nextSpawn = 1f;
-        //_nextSpawn = Random.Range(_minSpawnDelay, _maxSpawnDelay);
     }
 
     // Update is called once per frame
