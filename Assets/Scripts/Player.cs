@@ -15,11 +15,14 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
             Application.Quit();
-        if (Input.GetKeyUp(KeyCode.Space))
-            WordManager.Instance.ClearWord();
+        if (Input.GetKeyUp(KeyCode.Backspace))
+        {
+            WordManager.Instance.UpdateMainWordEnemyList(new());
+            WordManager.Instance.UpdateSecondaryWordEnemyList(new());
+        }
         foreach (var key in _listKeycode)
             if (Input.GetKeyDown(key))
-                WordManager.Instance.UpdateWord(key.ToString());
+                WordManager.Instance.UpdateWord(key.ToString()[0]);
     }
 
     public void Hit()

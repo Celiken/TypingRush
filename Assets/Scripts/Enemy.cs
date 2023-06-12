@@ -1,63 +1,68 @@
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("UI")]
     [SerializeField] private Canvas _canvas;
     [SerializeField] private TextMeshProUGUI _targetTMP;
-    [SerializeField] private float _speed;
 
-    private BezierCurve _curve;
+    [Header("Enemy stats")]
+    [SerializeField] private float _speed;
     private float _timeSinceSpawn;
-    private string _target;
+
+    [Header("Word info")]
+    [SerializeField] private string _target;
+    [SerializeField] private int _index;
+
 
     private void Start()
     {
-        InitBezierCurve();
         do
         {
             _target = WordsList.Instance.GetRandomWord();
         } while (WordManager.Instance.IsWordUsed(_target));
-        UpdateWordCompletion("");
+        UpdateWordVisual();
         SpawnManager.Instance.AddEnemy(this);
+        _index = 0;
         _timeSinceSpawn = 0f;
-    }
-
-    private void InitBezierCurve()
-    {
-        _curve = gameObject.AddComponent<BezierCurve>();
-        _curve.Init(transform.position, Vector3.zero);
-
-        // Add controlpoints here
-
-        _curve.ApproximateLength();
     }
 
     private void Update()
     {
         _timeSinceSpawn += Time.deltaTime;
-        transform.position = _curve.Evaluate(_timeSinceSpawn, _speed);
+        transform.position = Vector3.MoveTowards(transform.position, Vector3.zero, Time.deltaTime);
         _canvas.sortingOrder = 2500 - Mathf.RoundToInt(Vector3.Distance(transform.position, Vector3.zero) * 100);
     }
 
     private void OnDestroy() => SpawnManager.Instance.RemoveEnemy(this);
 
-    public bool UpdateWordCompletion(string _typing)
+    public (bool progress, int index) CheckNextLetter(char nextLetter)
     {
-        if (_target.StartsWith(_typing))
+        if (_target[_index] == nextLetter)
         {
-            _targetTMP.text = "<color=yellow>" + _target.Insert(_typing.Length, "</color>");
-            if (_typing == _target)
-            {
-                WordManager.Instance.ValidateWord();
-                SelfKill();
-            }
-            else 
-                return true;
+            _index++;
+            return (true, _index);
         }
+        return (false, 0);
+    }
+
+    public void UpdateWordVisual()
+    {
+        _targetTMP.text = "<color=yellow>" + _target.Insert(_index, "</color>");
+        if (_index == _target.Length)
+        {
+            WordManager.Instance.ValidateWord();
+            SelfKill();
+        }
+    }
+
+    public void ResetWordCompletion()
+    {
         _targetTMP.text = _target;
-        return false;
+        _index = 0;
     }
 
     private void SelfKill() => Destroy(gameObject);

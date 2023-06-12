@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class WordManager : MonoBehaviour
 {
@@ -8,7 +9,9 @@ public class WordManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _scoreTMP;
 
     private int score = 0;
-    private string _typing = "";
+
+    [SerializeField] private List<Enemy> _mainWordEnemyList = new();
+    [SerializeField] private List<Enemy> _secondaryWordEnemyList = new();
 
     private void Awake()
     {
@@ -18,34 +21,111 @@ public class WordManager : MonoBehaviour
     private void Start()
     {
         score = 0;
-        ClearWord();
         UpdateScore();
     }
 
-    public void UpdateWord(string l)
+    public void UpdateWord(char l)
     {
-        _typing += l;
-        UpdateWordCompletion();
+        CheckWordCompletion(l);
     }
 
-    private void UpdateWordCompletion()
+    private void CheckWordCompletion(char l)
     {
-        bool hasRightStart = false;
+        if (_mainWordEnemyList.Count == 0)
+            _mainWordEnemyList.AddRange(CheckAllWords(l));
+        else
+        {
+            (bool progMain, List<Enemy> tmpListMain) = CheckMainWord(l);
+            if (progMain)
+            {
+                UpdateMainWordEnemyList(tmpListMain);
+                UpdateSecondaryWordEnemyList(new());
+            }
+            if (_secondaryWordEnemyList.Count == 0)
+                _secondaryWordEnemyList.AddRange(CheckAllWords(l, true));
+            else
+            {
+                (bool progSecond, List<Enemy> tmpListSec) = CheckSecondWord(l);
+                if (progSecond)
+                {
+                    UpdateSecondaryWordEnemyList(tmpListSec);
+                    _secondaryWordEnemyList.Clear();
+                    UpdateMainWordEnemyList(tmpListSec);
+                }
+                else
+                {
+                    UpdateSecondaryWordEnemyList(new());
+                    _secondaryWordEnemyList.AddRange(CheckAllWords(l, true));
+                }
+            }
+        }
+        UpdateWordVisual();
+    }
+
+    private List<Enemy> CheckAllWords(char l, bool avoidMain = false)
+    {
+        List<Enemy> list = new();
         foreach (Enemy enemy in SpawnManager.Instance._enemyList)
         {
-            if (enemy.UpdateWordCompletion(_typing)) hasRightStart = true;
+            if (avoidMain && _mainWordEnemyList.Contains(enemy)) continue;
+            if (enemy.CheckNextLetter(l).progress) list.Add(enemy);
         }
-        if (!hasRightStart && _typing != "") ClearWord();
+        return list;
     }
 
-    public void ClearWord()
+    private (bool progress, List<Enemy> newList) CheckMainWord(char l)
     {
-        _typing = "";
-        UpdateWordCompletion();
+        List<Enemy> list = new();
+
+        foreach (Enemy enemy in _mainWordEnemyList)
+            if (enemy.CheckNextLetter(l).progress) list.Add(enemy);
+
+        return (list.Count != 0, list);
+    }
+    private (bool progress, List<Enemy> newList) CheckSecondWord(char l)
+    {
+        List<Enemy> list = new();
+
+        foreach (Enemy enemy in _secondaryWordEnemyList)
+            if (enemy.CheckNextLetter(l).progress) list.Add(enemy);
+
+        return (list.Count != 0, list);
+    }
+
+    private void UpdateWordVisual()
+    {
+        foreach (Enemy enemy in SpawnManager.Instance._enemyList)
+            enemy.UpdateWordVisual();
+    }
+
+    public void UpdateMainWordEnemyList(List<Enemy> newList)
+    {
+        if (_mainWordEnemyList != null)
+            foreach (Enemy enemy in _mainWordEnemyList)
+            {
+                if (newList != null && newList.Contains(enemy)) continue;
+                enemy.ResetWordCompletion();
+            }
+        _mainWordEnemyList.Clear();
+        _mainWordEnemyList.AddRange(newList);
+    }
+
+    public void UpdateSecondaryWordEnemyList(List<Enemy> newList)
+    {
+        if (_secondaryWordEnemyList != null)
+            foreach (Enemy enemy in _secondaryWordEnemyList)
+            {
+                if (newList != null && newList.Contains(enemy)) continue;
+                enemy.ResetWordCompletion();
+            }
+        _secondaryWordEnemyList.Clear();
+        _secondaryWordEnemyList.AddRange(newList);
     }
 
     public void ValidateWord()
     {
+        UpdateMainWordEnemyList(new());
+        UpdateSecondaryWordEnemyList(new());
         score++;
         UpdateScore();
     }

@@ -9,10 +9,10 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject _pfEnemy;
     public List<Enemy> _enemyList;
 
-    [SerializeField] private float _minSpawnDelay;
-    [SerializeField] private float _maxSpawnDelay;
-    [SerializeField] private float _minSpawnDistance;
-    [SerializeField] private float _maxSpawnDistance;
+    [SerializeField] private Vector2 _minMaxSpawnDelay;
+    [SerializeField] private float _spawnDistance;
+
+    [SerializeField] private int _maxSpawnedEnemy;
 
     private float _nextSpawn = 0f;
 
@@ -28,10 +28,10 @@ public class SpawnManager : MonoBehaviour
         _nextSpawn -= Time.deltaTime;
         if (_nextSpawn <= 0f)
         {
-            if (_enemyList.Count > 50) return;
-            _nextSpawn = Random.Range(_minSpawnDelay, _maxSpawnDelay);
+            if (_enemyList.Count >= _maxSpawnedEnemy) return;
+            _nextSpawn = Random.Range(_minMaxSpawnDelay.x, _minMaxSpawnDelay.y);
             GameObject go = Instantiate(_pfEnemy);
-            Vector3 pos = new Vector3(Random.Range(-1f,1f), 0f, Random.Range(-1f, 1f)).normalized * Random.Range(_minSpawnDistance, _maxSpawnDistance);
+            Vector3 pos = new Vector3(Random.Range(-1f,1f), 0f, Random.Range(-1f, 1f)).normalized * _spawnDistance;
             go.transform.position = pos;
         }
     }

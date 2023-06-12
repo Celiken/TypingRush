@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WordsList : SerializedMonoBehaviour
@@ -36,6 +37,7 @@ public class WordsList : SerializedMonoBehaviour
 
     public string GetRandomWord()
     {
-        return GetRandomWord(Random.Range(_minLength, _maxLength + 1));
+        var keys = _wordsArrays.Keys.ToList();
+        return GetRandomWord(keys[Random.Range(0, keys.Count)]);
     }
 }
