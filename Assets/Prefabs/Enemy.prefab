@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5066545237541778198}
   - component: {fileID: 8445750697480045592}
   - component: {fileID: 3696449243522945428}
+  - component: {fileID: 8903547118540624803}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -48,9 +49,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9dae2eaef04bf846bcf8fe780db5ebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bezier: {fileID: 8903547118540624803}
+  _minRadiusControlPoint: 1
+  _maxRadiusControlPoint: 4
   _canvas: {fileID: 47893737431881929}
   _targetTMP: {fileID: 1845280397924074259}
-  _speed: 2
+  _minSpeed: 0.5
+  _maxSpeed: 5
   _target: 
   _index: 0
 --- !u!54 &8445750697480045592
@@ -101,6 +106,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.4
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &8903547118540624803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048870270904739722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 268c088d478b37b419842f2abd2e6115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _points: []
 --- !u!1 &5737364758589019330
 GameObject:
   m_ObjectHideFlags: 0

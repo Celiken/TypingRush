@@ -370,9 +370,9 @@ MonoBehaviour:
   _pfEnemy: {fileID: 1048870270904739722, guid: 8a5db86a563ef9e4d9f718edd2eb5ecd,
     type: 3}
   _enemyList: []
-  _minMaxSpawnDelay: {x: 0.5, y: 2}
+  _minMaxSpawnDelay: {x: 1, y: 5}
   _spawnDistance: 25
-  _maxSpawnedEnemy: 15
+  _maxSpawnedEnemy: 10
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
