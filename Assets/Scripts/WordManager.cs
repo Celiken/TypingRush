@@ -95,7 +95,7 @@ public class WordManager : MonoBehaviour
     private void UpdateWordVisual()
     {
         foreach (Enemy enemy in SpawnManager.Instance._enemyList)
-            enemy.UpdateWordVisual();
+            enemy.UpdateWordVisual(_mainWordEnemyList.Contains(enemy));
     }
 
     public void UpdateMainWordEnemyList(List<Enemy> newList)

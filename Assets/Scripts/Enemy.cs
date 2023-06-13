@@ -11,8 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _maxRadiusControlPoint;
 
     [Header("UI")]
-    [SerializeField] private Canvas _canvas;
-    [SerializeField] private TextMeshProUGUI _targetTMP;
+    [SerializeField] private TextMeshPro _targetTMP;
 
     [Header("Enemy stats")]
     [SerializeField] private float _minSpeed;
@@ -35,7 +34,7 @@ public class Enemy : MonoBehaviour
         UpdateWordVisual();
         SpawnManager.Instance.AddEnemy(this);
         _index = 0;
-        _speed = -0.346f * _target.Length + 5.346f; // 5-0.5
+        _speed = Mathf.Lerp(_maxSpeed, _minSpeed, (_target.Length-1) / 13f);
         _timeSinceSpawn = 0f;
     }
 
@@ -43,7 +42,6 @@ public class Enemy : MonoBehaviour
     {
         _timeSinceSpawn += Time.deltaTime;
         transform.position = _bezier.Evaluate(_timeSinceSpawn, _speed);
-        _canvas.sortingOrder = 2500 - Mathf.RoundToInt(Vector3.Distance(transform.position, Vector3.zero) * 100);
     }
 
     private void OnDestroy() => SpawnManager.Instance.RemoveEnemy(this);
@@ -78,9 +76,12 @@ public class Enemy : MonoBehaviour
         return (false, 0);
     }
 
-    public void UpdateWordVisual()
+    public void UpdateWordVisual(bool main = false)
     {
-        _targetTMP.text = "<color=yellow>" + _target.Insert(_index, "</color>");
+        if (main)
+            _targetTMP.text = "<color=black>" + _target.Insert(_index, "</color>");
+        else
+            _targetTMP.text = "<color=orange>" + _target.Insert(_index, "</color>");
         if (_index == _target.Length)
         {
             WordManager.Instance.ValidateWord();
