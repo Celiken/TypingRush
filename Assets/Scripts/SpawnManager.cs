@@ -39,9 +39,4 @@ public class SpawnManager : MonoBehaviour
     public void AddEnemy(Enemy enemy) => _enemyList.Add(enemy);
     public void RemoveEnemy(Enemy enemy) => _enemyList.Remove(enemy);
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(Vector3.zero, _spawnDistance);
-    }
-
 }

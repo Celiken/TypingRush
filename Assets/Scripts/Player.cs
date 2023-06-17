@@ -1,8 +1,9 @@
-using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private HealthComponent _health;
+
     private KeyCode[] _listKeycode =
         {
             KeyCode.A, KeyCode.B, KeyCode.C, KeyCode.D, KeyCode.E, KeyCode.F, KeyCode.G,
@@ -27,6 +28,8 @@ public class Player : MonoBehaviour
 
     public void Hit()
     {
-        Debug.Log("Player got hit");
+        if (_health.GetHit())
+            Debug.Log("Player died");
+
     }
 }
