@@ -24,7 +24,6 @@ public class HealthComponent : MonoBehaviour
     public bool GetHit()
     {
         if (_currentLife <= 0) return true;
-        Debug.Log("Player got hit");
         _currentLife--;
         _lights[_currentLife].SetActive(false);
         return _currentLife <= 0;
